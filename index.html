@@ -8213,13 +8213,40 @@ function onbPopulateStep(step){
     const inp=document.getElementById('onbLicInput');
     if(inp&&!inp._proWired){
       inp._proWired=true;
-      inp.addEventListener('input',function(){
+      inp.addEventListener('change',async function(){
         const v=this.value.trim();
-        // UUID format: 8-4-4-4-12 hex chars
         const uuidRe=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        if(uuidRe.test(v)){
-          localStorage.setItem('eter2_proToken',v);
-          setTimeout(showProActivate,350);
+        if(!uuidRe.test(v))return;
+        const isES=currentLang==='es';
+        // Show loading state
+        inp.disabled=true;
+        inp.style.opacity='.5';
+        const noteEl=document.getElementById('onbLicNote');
+        if(noteEl)noteEl.textContent=isES?'Verificando licencia…':'Verifying license…';
+        try{
+          const res=await fetch('https://api.lemonsqueezy.com/v1/licenses/validate',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({license_key:v,instance_name:'ALINEA PRO'})
+          });
+          const data=await res.json();
+          const valid=data?.valid===true;
+          const productId=data?.meta?.product_id;
+          // Verify it belongs to ALINEA PRO product
+          if(valid&&String(productId)==='1097329'){
+            localStorage.setItem('eter2_proToken',v);
+            if(noteEl)noteEl.textContent='';
+            setTimeout(showProActivate,350);
+          } else {
+            if(noteEl)noteEl.textContent=isES?'❌ Licencia inválida o no encontrada. Verifica tu email de compra.':'❌ Invalid license. Please check your purchase email.';
+            noteEl.style.color='#f87171';
+            inp.disabled=false;
+            inp.style.opacity='1';
+          }
+        }catch(e){
+          if(noteEl)noteEl.textContent=isES?'⚠️ Error de conexión. Intenta de nuevo.':'⚠️ Connection error. Please try again.';
+          inp.disabled=false;
+          inp.style.opacity='1';
         }
       });
     }
