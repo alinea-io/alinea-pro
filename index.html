@@ -71,6 +71,7 @@
 @keyframes onbFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes starExpand{0%{opacity:0;transform:scale(.6)}30%{opacity:1}100%{opacity:.18;transform:scale(2.8)}}
 @keyframes proActivateIn{0%{opacity:0;transform:scale(.94) translateY(12px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes licBarShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes proGlowPulse{0%,100%{box-shadow:0 0 20px rgba(139,92,246,.3),0 0 60px rgba(139,92,246,.1)}50%{box-shadow:0 0 40px rgba(139,92,246,.6),0 0 100px rgba(139,92,246,.2)}}
 #proActivateScreen{position:absolute;inset:0;z-index:20;background:#000;border-radius:14px;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.5rem 2rem;overflow:hidden}
 #proActivateScreen.visible{display:flex;animation:proActivateIn .55s cubic-bezier(.22,1,.36,1) both}
@@ -1708,6 +1709,13 @@ canvas{-webkit-user-select:none;user-select:none}
         <p id="onbLicSub" style="font-size:.68rem;color:var(--muted);line-height:1.6">Recibirás tu clave por email tras completar tu compra en Lemon Squeezy.</p>
       </div>
       <input class="fin" type="text" id="onbLicInput" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" style="font-size:.72rem;padding:.65rem .9rem;letter-spacing:.05em;margin-bottom:.6rem;width:100%;box-sizing:border-box">
+      <!-- Progress bar -->
+      <div id="onbLicProgress" style="display:none;margin-bottom:.6rem">
+        <div style="height:2px;background:rgba(139,92,246,.15);border-radius:99px;overflow:hidden">
+          <div id="onbLicBar" style="height:100%;width:0%;background:linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed);background-size:200% 100%;border-radius:99px;transition:width .4s ease"></div>
+        </div>
+        <p id="onbLicStatus" style="font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(167,139,250,.7);text-align:center;margin-top:.35rem"></p>
+      </div>
       <p id="onbLicNote" style="font-size:.58rem;color:var(--dim);text-align:center;line-height:1.6">Recibirás tu clave por email tras completar tu compra en Lemon Squeezy.</p>
     </div>
 
@@ -8165,6 +8173,14 @@ function onbGo(dir){
   const newStep=_onbStep+dir;
   if(newStep<0||newStep>6)return;
   if(newStep>0&&!_onbLangSelected)return;
+  if(_onbStep===3&&dir===1&&!localStorage.getItem('eter2_proToken')){
+    const isES=currentLang==='es';
+    const noteEl=document.getElementById('onbLicNote');
+    if(noteEl){noteEl.textContent=isES?'⚠️ Ingresa tu licencia para continuar.':'⚠️ Enter your license key to continue.';noteEl.style.color='#f87171';}
+    const inp=document.getElementById('onbLicInput');
+    if(inp){inp.focus();inp.style.borderColor='rgba(248,113,113,.6)';}
+    return;
+  }
   document.getElementById('onbStep'+_onbStep).style.display='none';
   _onbStep=newStep;
   document.getElementById('onbStep'+_onbStep).style.display='block';
@@ -8218,11 +8234,20 @@ function onbPopulateStep(step){
         const uuidRe=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if(!uuidRe.test(v))return;
         const isES=currentLang==='es';
-        // Show loading state
+        // Show progress bar
         inp.disabled=true;
         inp.style.opacity='.5';
         const noteEl=document.getElementById('onbLicNote');
-        if(noteEl)noteEl.textContent=isES?'Verificando licencia…':'Verifying license…';
+        if(noteEl)noteEl.textContent='';
+        const prog=document.getElementById('onbLicProgress');
+        const bar=document.getElementById('onbLicBar');
+        const status=document.getElementById('onbLicStatus');
+        if(prog)prog.style.display='block';
+        if(status)status.textContent=isES?'Conectando con Lemon Squeezy…':'Connecting to Lemon Squeezy…';
+        if(bar){bar.style.width='30%';bar.style.animation='licBarShimmer 1.2s linear infinite';}
+        await new Promise(r=>setTimeout(r,400));
+        if(bar)bar.style.width='60%';
+        if(status)status.textContent=isES?'Verificando licencia…':'Verifying license…';
         try{
           const res=await fetch('https://api.lemonsqueezy.com/v1/licenses/validate',{
             method:'POST',
@@ -8235,13 +8260,17 @@ function onbPopulateStep(step){
           // Verify it belongs to ALINEA PRO product
           if(valid&&String(productId)==='1097329'){
             localStorage.setItem('eter2_proToken',v);
+            if(bar){bar.style.width='100%';bar.style.background='linear-gradient(90deg,#22c55e,#4ade80)';}
+            if(status)status.textContent=isES?'✔ Licencia válida. Bienvenido a ALINEA PRO.':'✔ Valid license. Welcome to ALINEA PRO.';
+            if(status)status.style.color='#4ade80';
             if(noteEl)noteEl.textContent='';
-            setTimeout(showProActivate,350);
+            setTimeout(showProActivate,900);
           } else {
-            if(noteEl)noteEl.textContent=isES?'❌ Licencia inválida o no encontrada. Verifica tu email de compra.':'❌ Invalid license. Please check your purchase email.';
-            noteEl.style.color='#f87171';
+            if(bar){bar.style.width='100%';bar.style.background='linear-gradient(90deg,#ef4444,#f87171)';bar.style.animation='none';}
+            if(status){status.textContent=isES?'❌ Licencia inválida o no encontrada.':'❌ Invalid license. Check your purchase email.';status.style.color='#f87171';}
+            setTimeout(()=>{if(prog)prog.style.display='none';if(bar){bar.style.width='0%';bar.style.background='linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed)';}},2000);
             inp.disabled=false;
-            inp.style.opacity='1';
+            inp.style.opacity='1';inp.style.borderColor='rgba(248,113,113,.6)';
           }
         }catch(e){
           if(noteEl)noteEl.textContent=isES?'⚠️ Error de conexión. Intenta de nuevo.':'⚠️ Connection error. Please try again.';
