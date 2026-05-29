@@ -314,6 +314,7 @@ body::before{content:'';position:fixed;inset:0;background:
 .exp-bg{position:relative;width:100%;min-height:calc(100vh - var(--content-top) - var(--content-bottom))}
 .mag-words-flow{position:relative;padding:1.2rem 1.5rem 4rem;min-height:calc(100vh - 300px)}
 @keyframes magFloat{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-5px) rotate(var(--r,0deg))}}
+@keyframes bitFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes magIn{from{opacity:0;transform:scale(.85) rotate(var(--r,0deg))}to{opacity:1;transform:scale(1) rotate(var(--r,0deg))}}
 .mag-word{
   position:absolute;
@@ -373,7 +374,14 @@ body::before{content:'';position:fixed;inset:0;background:
 .bit-hero h2 em{font-style:italic;background:linear-gradient(120deg,var(--accent2) 0%,#fff 55%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .bit-hero p{font-size:.72rem;color:var(--muted);line-height:1.6}
 .bit-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.8rem}
-.bit-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;transition:border-color .2s,box-shadow .2s,transform .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.bit-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;transition:border-color .2s,box-shadow .2s,transform .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;animation:bitFloat var(--dur,5s) var(--delay,0s) ease-in-out infinite;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0)}
+.bit-card:nth-child(1){--dur:4.2s;--delay:0s}
+.bit-card:nth-child(2){--dur:3.8s;--delay:.6s}
+.bit-card:nth-child(3){--dur:4.6s;--delay:1.1s}
+.bit-card:nth-child(4){--dur:3.5s;--delay:.3s}
+.bit-card:nth-child(5){--dur:4.9s;--delay:1.5s}
+.bit-card:nth-child(6){--dur:4.0s;--delay:.9s}
+.bit-card:hover{animation-play-state:paused}
 .bit-card:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 18px var(--glow),0 0 35px rgba(139,92,246,.18);transform:translateY(-1px)}
 .bit-card-title{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:.65rem;display:flex;align-items:center;justify-content:center;gap:.4rem}
 .bit-stat{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:.25rem;text-align:center}
@@ -754,6 +762,9 @@ canvas{-webkit-user-select:none;user-select:none}
 <div id="splash">
   <div class="splash-orb"></div>
   <div class="splash-name" style="margin-top:0">ALINEA</div>
+  <div style="margin-top:.3rem;animation:fadeUp .8s .75s both">
+    <span style="font-family:'DM Mono',monospace;font-size:.5rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent2);text-shadow:0 0 12px var(--accent),0 0 24px rgba(139,92,246,.4)">PRO</span>
+  </div>
   <div class="splash-lib" id="splashLib">Hagamos visible lo invisible.</div>
 </div>
 
@@ -860,6 +871,10 @@ canvas{-webkit-user-select:none;user-select:none}
       <!-- BOOKS GRID -->
       <div class="books-area"><div class="bgrid" id="bgrid"></div>
         <div style="text-align:center;padding:2rem 1rem 1rem;border-top:1px solid rgba(139,92,246,.08);margin-top:1.5rem">
+          <button onclick="openBackupReminder()" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(139,92,246,.06);border:1px dashed rgba(139,92,246,.3);border-radius:8px;padding:.5rem 1rem;cursor:pointer;margin-bottom:1rem;transition:all .2s" onmouseover="this.style.borderColor='rgba(139,92,246,.6)';this.style.background='rgba(139,92,246,.12)'" onmouseout="this.style.borderColor='rgba(139,92,246,.3)';this.style.background='rgba(139,92,246,.06)'">
+            <span style="font-size:.85rem">⏰</span>
+            <span style="font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,181,253,.6)" data-i18n="remindBackupTitle">Programar recordatorio de respaldo</span>
+          </button>
           <div style="font-family:'DM Mono',monospace;font-size:.52rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(196,181,253,.4);margin-bottom:.3rem">ALINEA <span style="opacity:.5">·</span> PRO</div>
           <a href="https://instagram.com/alinea.work" target="_blank" style="font-family:'DM Mono',monospace;font-size:.48rem;color:rgba(139,92,246,.4);text-decoration:none;letter-spacing:.06em;display:block;margin-bottom:.3rem">@alinea.work ↗</a>
           <a href="https://alinea-io.github.io/alinea-landing/landing.html" target="_blank" style="font-family:'DM Mono',monospace;font-size:.44rem;color:rgba(139,92,246,.25);letter-spacing:.06em;text-decoration:none;display:block">#MakingVisibleTheInvisible</a>
@@ -924,6 +939,10 @@ canvas{-webkit-user-select:none;user-select:none}
         <div class="mag-words-flow" id="magWordsFlow"></div>
       </div>
       <div style="text-align:center;padding:2rem 1rem 1rem;border-top:1px solid rgba(139,92,246,.08);margin-top:1.5rem">
+                  <button onclick="openBackupReminder()" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(139,92,246,.06);border:1px dashed rgba(139,92,246,.3);border-radius:8px;padding:.5rem 1rem;cursor:pointer;margin-bottom:1rem;transition:all .2s" onmouseover="this.style.borderColor='rgba(139,92,246,.6)';this.style.background='rgba(139,92,246,.12)'" onmouseout="this.style.borderColor='rgba(139,92,246,.3)';this.style.background='rgba(139,92,246,.06)'">
+            <span style="font-size:.85rem">⏰</span>
+            <span style="font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,181,253,.6)" data-i18n="remindBackupTitle">Programar recordatorio de respaldo</span>
+          </button>
         <div style="font-family:'DM Mono',monospace;font-size:.52rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(196,181,253,.4);margin-bottom:.3rem">ALINEA <span style="opacity:.5">·</span> PRO</div>
         <a href="https://instagram.com/alinea.work" target="_blank" style="font-family:'DM Mono',monospace;font-size:.48rem;color:rgba(139,92,246,.4);text-decoration:none;letter-spacing:.06em;display:block;margin-bottom:.3rem">@alinea.work ↗</a>
         <a href="https://alinea-io.github.io/alinea-landing/landing.html" target="_blank" style="font-family:'DM Mono',monospace;font-size:.44rem;color:rgba(139,92,246,.25);letter-spacing:.06em;text-decoration:none;display:block">#MakingVisibleTheInvisible</a>
@@ -947,6 +966,10 @@ canvas{-webkit-user-select:none;user-select:none}
           <div class="conn-list" id="connList"></div>
         </div>
         <div style="text-align:center;padding:2rem 1rem 1rem;border-top:1px solid rgba(139,92,246,.08);margin-top:1.5rem">
+                    <button onclick="openBackupReminder()" style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(139,92,246,.06);border:1px dashed rgba(139,92,246,.3);border-radius:8px;padding:.5rem 1rem;cursor:pointer;margin-bottom:1rem;transition:all .2s" onmouseover="this.style.borderColor='rgba(139,92,246,.6)';this.style.background='rgba(139,92,246,.12)'" onmouseout="this.style.borderColor='rgba(139,92,246,.3)';this.style.background='rgba(139,92,246,.06)'">
+            <span style="font-size:.85rem">⏰</span>
+            <span style="font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,181,253,.6)" data-i18n="remindBackupTitle">Programar recordatorio de respaldo</span>
+          </button>
           <div style="font-family:'DM Mono',monospace;font-size:.52rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(196,181,253,.4);margin-bottom:.3rem">ALINEA <span style="opacity:.5">·</span> PRO</div>
           <a href="https://instagram.com/alinea.work" target="_blank" style="font-family:'DM Mono',monospace;font-size:.48rem;color:rgba(139,92,246,.4);text-decoration:none;letter-spacing:.06em;display:block;margin-bottom:.3rem">@alinea.work ↗</a>
           <a href="https://alinea-io.github.io/alinea-landing/landing.html" target="_blank" style="font-family:'DM Mono',monospace;font-size:.44rem;color:rgba(139,92,246,.25);letter-spacing:.06em;text-decoration:none;display:block">#MakingVisibleTheInvisible</a>
@@ -1435,6 +1458,17 @@ canvas{-webkit-user-select:none;user-select:none}
         </div>
       </button>
 
+
+        <!-- Recordatorio de respaldo -->
+        <div style="margin-bottom:1rem">
+          <button onclick="openBackupReminder()" style="width:100%;display:flex;align-items:center;gap:.75rem;background:rgba(139,92,246,.06);border:1px dashed rgba(139,92,246,.35);border-radius:10px;padding:.75rem 1rem;cursor:pointer;transition:all .2s;text-align:left" onmouseover="this.style.borderColor='rgba(139,92,246,.7)';this.style.background='rgba(139,92,246,.12)'" onmouseout="this.style.borderColor='rgba(139,92,246,.35)';this.style.background='rgba(139,92,246,.06)'">
+            <span style="font-size:1.1rem">⏰</span>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2)" data-i18n="remindBackupTitle">Programar recordatorio de respaldo</div>
+              <div style="font-family:'DM Mono',monospace;font-size:.48rem;color:var(--muted);margin-top:.15rem" data-i18n="remindBackupSub">Agrega un evento a tu calendario para no olvidar</div>
+            </div>
+          </button>
+        </div>
       <!-- Restore -->
       <label style="width:100%;display:flex;align-items:center;gap:.9rem;background:#06050f;border:1.5px solid var(--border2);border-radius:12px;padding:1rem 1.1rem;cursor:pointer;transition:all .2s;margin-bottom:.55rem;text-align:left;box-sizing:border-box;background-image:radial-gradient(ellipse at 70% 50%,rgba(139,92,246,.1) 0%,transparent 55%),radial-gradient(1px 1px at 15% 20%,rgba(220,210,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 85% 25%,rgba(220,210,255,.4) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 45% 75%,rgba(255,255,255,.35) 0%,transparent 100%),radial-gradient(1px 1px at 92% 65%,rgba(220,210,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 20% 85%,rgba(220,210,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 65% 10%,rgba(220,210,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 38% 45%,rgba(255,255,255,.25) 0%,transparent 100%)" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 20px rgba(139,92,246,.25)'" onmouseout="this.style.borderColor='var(--border2)';this.style.boxShadow='none'">
         <div style="width:38px;height:38px;border-radius:9px;background:rgba(196,181,253,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📂</div>
@@ -1632,10 +1666,7 @@ canvas{-webkit-user-select:none;user-select:none}
     <!-- Divider -->
     <div style="width:48px;height:1px;background:linear-gradient(to right,transparent,rgba(139,92,246,.6),transparent);margin:0 auto 1.4rem;position:relative;z-index:1"></div>
 
-    <!-- Body -->
-    <div style="max-width:320px;position:relative;z-index:1;text-align:center">
-      <p style="font-size:.72rem;color:rgba(196,181,253,.8);line-height:1.9;margin-bottom:1.8rem">Every book you add is a star in your constellation. Every note, a coordinate in the map of your mind. You didn't just buy an app — <em style="color:#e0d4ff;font-style:italic">you claimed your own galaxy.</em></p>
-    </div>
+
 
     <!-- CTA -->
     <button onclick="dismissProActivate()" style="position:relative;z-index:1;background:linear-gradient(135deg,#6d28d9,#8b5cf6);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;padding:.75rem 2rem;border-radius:8px;cursor:pointer;box-shadow:0 4px 24px rgba(139,92,246,.5),0 0 0 1px rgba(255,255,255,.06);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 32px rgba(139,92,246,.65),0 0 0 1px rgba(255,255,255,.1)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 24px rgba(139,92,246,.5),0 0 0 1px rgba(255,255,255,.06)'">Start Building My Galaxy →</button>
@@ -1937,7 +1968,7 @@ es:{name:'Español',t:{
   onboardingTitle:'Tutorial de inicio',onboardingDesc:'¿Quieres volver a ver la guía de bienvenida?',onboardingBtn:'✦ Ver guía de inicio',
   authorNoteTitle:'Nota del autor',
   newCatPrompt:'Nueva categoría:',
-  downloadBackupNow:'⬇ Descargar respaldo ahora',
+  downloadBackupNow:'⬇ Descargar respaldo ahora',remindBackupTitle:'Programar recordatorio de respaldo',remindBackupSub:'Agrega un evento a tu calendario para no olvidar',
   importantNote:'Una cosa importante —',
   privacyNote:'Tus datos nunca salen de tu dispositivo. Ni siquiera yo puedo verlos. ALINEA jamás tendrá acceso a tu información. Lo único que te pido es que descargues tu respaldo. Ese archivo JSON es tu biblioteca entera: vive donde tú quieras, y con él siempre podrás volver a tu galaxia, desde cualquier momento y cualquier dispositivo.',
   storageTitle:'💾 Almacenamiento',locationTitle:'📍 Ubicación',privacyTitle:'🔒 Privacidad',
@@ -2049,7 +2080,7 @@ en:{name:'English',t:{
   searchLibPlaceholder:'Search books, authors, keywords…',onboardingDesc:'Want to see the welcome guide again?',onboardingBtn:'✦ View getting started',
   authorNoteTitle:"Author's note",
   newCatPrompt:'New category:',
-  downloadBackupNow:'⬇ Download backup now',
+  downloadBackupNow:'⬇ Download backup now',remindBackupTitle:'Schedule backup reminder',remindBackupSub:'Add a calendar event so you never forget',
   importantNote:'One important thing —',
   privacyNote:"Your data never leaves your device. Not even I can see it. ALINEA will never have your information. The only thing I ask is that you download your backup — that JSON file is your entire library, lives wherever you want, and with it you can return to your galaxy at any time on any device.",
   storageTitle:'💾 Storage',locationTitle:'📍 Location',privacyTitle:'🔒 Privacy',
@@ -8780,6 +8811,114 @@ document.addEventListener('click',e=>{
     });
   },{passive:true});
 })();
+// ── BACKUP REMINDER ──
+var _reminderFreq = {freq:'daily', days:1};
+var _reminderCal = 'auto';
+
+function openBackupReminder(){
+  const m = document.getElementById('backupReminderModal');
+  if(m){m.style.display='flex';}
+  const isES = (localStorage.getItem('eter_lang')||'es')==='es';
+  // Translate modal
+  const el=id=>document.getElementById(id);
+  if(el('reminderEyebrow')) el('reminderEyebrow').textContent = '⏰ ' + (isES?'RECORDATORIO':'REMINDER');
+  if(el('reminderTitle')) el('reminderTitle').textContent = isES?'Programar respaldo':'Schedule backup';
+  if(el('reminderFreqLabel')) el('reminderFreqLabel').textContent = isES?'Frecuencia':'Frequency';
+  if(el('reminderCalLabel')) el('reminderCalLabel').textContent = isES?'Calendario':'Calendar';
+  if(el('rfreqDaily')) el('rfreqDaily').textContent = isES?'Diario':'Daily';
+  if(el('rfreqWeekly')) el('rfreqWeekly').textContent = isES?'Semanal':'Weekly';
+  if(el('rfreqBiweekly')) el('rfreqBiweekly').textContent = isES?'Quincenal':'Biweekly';
+  if(el('rfreqMonthly')) el('rfreqMonthly').textContent = isES?'Mensual':'Monthly';
+  if(el('reminderCTA')) el('reminderCTA').textContent = isES?'⏰ Agregar al calendario →':'⏰ Add to calendar →';
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isMac = /mac/i.test(navigator.userAgent) && !isIOS;
+  const isAndroid = /android/i.test(navigator.userAgent);
+  // Update auto label
+  let autoBtn = document.querySelector('.reminder-cal-btn[data-cal="auto"]');
+  // Hide the manual option that matches auto-detected platform
+  const appleBtn = document.querySelector('.reminder-cal-btn[data-cal="apple"]');
+  const googleBtn = document.querySelector('.reminder-cal-btn[data-cal="google"]');
+  if(isIOS||isMac){
+    autoBtn.textContent = 'Apple Calendar';
+    if(appleBtn) appleBtn.style.display='none';
+    if(googleBtn) googleBtn.style.display='';
+  } else if(isAndroid){
+    autoBtn.textContent = '📅 Google Calendar';
+    if(googleBtn) googleBtn.style.display='none';
+    if(appleBtn) appleBtn.style.display='';
+  } else {
+    autoBtn.textContent = '📅 Google Calendar';
+    if(googleBtn) googleBtn.style.display='none';
+    if(appleBtn) appleBtn.style.display='';
+  }
+}
+
+function closeBackupReminder(){
+  const m = document.getElementById('backupReminderModal');
+  if(m) m.style.display='none';
+}
+
+function selectReminderFreq(btn){
+  document.querySelectorAll('.reminder-freq-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  _reminderFreq = {freq: btn.dataset.freq, days: parseInt(btn.dataset.days)};
+}
+
+function selectReminderCal(btn){
+  document.querySelectorAll('.reminder-cal-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  _reminderCal = btn.dataset.cal;
+}
+
+function generateReminderLink(){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isMac = /mac/i.test(navigator.userAgent) && !isIOS;
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  const now = new Date();
+  const start = now.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const end = new Date(now.getTime()+30*60000).toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+
+  const freqMap = {daily:'DAILY', weekly:'WEEKLY', biweekly:'WEEKLY;INTERVAL=2', monthly:'MONTHLY'};
+  const isESg = currentLang==='es';
+  const freqLabel = isESg ? {daily:'Diario', weekly:'Semanal', biweekly:'Quincenal', monthly:'Mensual'} : {daily:'Daily', weekly:'Weekly', biweekly:'Biweekly', monthly:'Monthly'};
+  const title = encodeURIComponent('⬇ Respaldar ALINEA — '+freqLabel[_reminderFreq.freq]);
+  const details = encodeURIComponent('Descarga tu respaldo .json en access.alinea.work → Configuración → Datos → Descargar Respaldo');
+  const location = encodeURIComponent('access.alinea.work');
+
+  let cal = _reminderCal;
+  if(cal === 'auto'){
+    if(isIOS||isMac) cal = 'apple';
+    else cal = 'google';
+  }
+
+  let url = '';
+  if(cal === 'google'){
+    url = `https://calendar.google.com/calendar/r/eventedit?text=${title}&details=${details}&location=${location}&dates=${start}/${end}&recur=RRULE:FREQ=${freqMap[_reminderFreq.freq]}`;
+  } else if(cal === 'apple'){
+    url = `webcal://access.alinea.work?action=TEMPLATE&text=${title}&details=${details}`;
+    // For Apple, generate a .ics file download
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
+      'DTSTART:'+start,'DTEND:'+end,
+      'RRULE:FREQ='+freqMap[_reminderFreq.freq],
+      'SUMMARY:⬇ Respaldar ALINEA',
+      'DESCRIPTION:Descarga tu respaldo en access.alinea.work',
+      'URL:https://access.alinea.work',
+      'END:VEVENT','END:VCALENDAR'].join('\n');
+    const blob = new Blob([ics], {type:'text/calendar'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'respaldo-alinea.ics';
+    a.click();
+    closeBackupReminder();
+    return;
+  } else if(cal === 'outlook'){
+    url = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${title}&body=${details}&startdt=${now.toISOString()}&enddt=${new Date(now.getTime()+30*60000).toISOString()}`;
+  }
+
+  if(url) window.open(url, '_blank');
+  closeBackupReminder();
+}
 </script>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -8877,7 +9016,49 @@ document.addEventListener('click',e=>{
     <button class="btn-ok" onclick="closeModal('mNoteConfirm');_doAddNote(_pendingNoteBookId)" style="min-width:130px">Sí, estoy seguro</button>
   </div>
 </div>
+
+  <style>
+  .reminder-freq-btn,.reminder-cal-btn{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);color:rgba(196,181,253,.7);border-radius:7px;padding:.45rem .5rem;cursor:pointer;transition:all .15s;text-align:center}
+  .reminder-freq-btn:hover,.reminder-cal-btn:hover{border-color:rgba(139,92,246,.6);background:rgba(139,92,246,.15);color:#e0d4ff}
+  .reminder-freq-btn.active,.reminder-cal-btn.active{border-color:var(--accent);background:rgba(139,92,246,.25);color:#fff;box-shadow:0 0 12px rgba(139,92,246,.3)}
+  </style>
+  <!-- ── BACKUP REMINDER MODAL ── -->
+  <div id="backupReminderModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
+    <div style="background:#0d0b1a;border:1px solid rgba(139,92,246,.4);border-radius:16px;padding:1.5rem;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 0 1px rgba(139,92,246,.1)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(196,181,253,.5);margin-bottom:.3rem" id="reminderEyebrow">⏰ RECORDATORIO</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#fff" id="reminderTitle">Programar respaldo</div>
+        </div>
+        <button onclick="closeBackupReminder()" style="background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.5);font-size:1rem;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      </div>
+
+      <!-- Frecuencia -->
+      <div style="margin-bottom:1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(196,181,253,.5);margin-bottom:.5rem" id="reminderFreqLabel">Frecuencia</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem" id="reminderFreqGrid">
+          <button class="reminder-freq-btn active" data-freq="daily" data-days="1" onclick="selectReminderFreq(this)" id="rfreqDaily">Diario</button>
+          <button class="reminder-freq-btn" data-freq="weekly" data-days="7" onclick="selectReminderFreq(this)" id="rfreqWeekly">Semanal</button>
+          <button class="reminder-freq-btn" data-freq="biweekly" data-days="14" onclick="selectReminderFreq(this)" id="rfreqBiweekly">Quincenal</button>
+          <button class="reminder-freq-btn" data-freq="monthly" data-days="30" onclick="selectReminderFreq(this)" id="rfreqMonthly">Mensual</button>
+        </div>
+      </div>
+
+      <!-- Calendario -->
+      <div style="margin-bottom:1.2rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(196,181,253,.5);margin-bottom:.5rem" id="reminderCalLabel">Calendario</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem" id="reminderCalGrid">
+          <button class="reminder-cal-btn active" data-cal="auto" onclick="selectReminderCal(this)">🔍 Auto-detectar</button>
+          <button class="reminder-cal-btn" data-cal="google" onclick="selectReminderCal(this)">Google Calendar</button>
+          <button class="reminder-cal-btn" data-cal="apple" onclick="selectReminderCal(this)">Apple Calendar</button>
+          <button class="reminder-cal-btn" data-cal="outlook" onclick="selectReminderCal(this)">Outlook</button>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button onclick="generateReminderLink()" style="width:100%;background:linear-gradient(135deg,#6d28d9,#8b5cf6);color:#fff;border:none;font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:.7rem;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(139,92,246,.4)" id="reminderCTA">⏰ Agregar al calendario →</button>
+    </div>
+  </div>
   <!-- Lemon Squeezy -->
-  <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
-</body>
+  <script src="https://assets.lemonsqueezy.com/lemon.js" defer>
 </html>
