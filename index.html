@@ -2769,23 +2769,23 @@ function _drawShareHeader(ctx, W, theme, orbY, orbR) {
 // Stars fill the footer area too (no opaque rectangle)
 function _drawShareFooter(ctx, W, H, theme) {
   const ac = theme.accent, ac2 = theme.accent2;
-  const fH = 180;
+  const fH = 160;
   const fY = H - fH;
-  // Semi-transparent overlay so stars show through subtly
+  // Semi-transparent overlay
   ctx.fillStyle = 'rgba(4,3,12,.72)'; ctx.fillRect(0, fY, W, fH);
-  // Separator line centered
-  ctx.strokeStyle = ac + '55'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(W * .28, fY + 1); ctx.lineTo(W * .72, fY + 1); ctx.stroke();
-  // ALINEA
-  ctx.fillStyle = ac2 + 'ee'; ctx.font = '500 48px "DM Mono",monospace';
-  ctx.textAlign = 'center'; ctx.letterSpacing = '14px';
-  ctx.fillText('ALINEA', W/2, fY + 68); ctx.letterSpacing = '0';
-  // @alinea.work
-  ctx.fillStyle = ac + 'cc'; ctx.font = '400 30px "DM Mono",monospace'; ctx.letterSpacing = '4px';
-  ctx.fillText('@alinea.work', W/2, fY + 114); ctx.letterSpacing = '0';
-  // #MakingVisibleTheInvisible
-  ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.font = '300 22px "DM Mono",monospace'; ctx.letterSpacing = '1px';
-  ctx.fillText('#MakingVisibleTheInvisible', W/2, fY + 152); ctx.letterSpacing = '0';
+  // Separator line
+  ctx.strokeStyle = ac + '50'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(W * .30, fY + 1); ctx.lineTo(W * .70, fY + 1); ctx.stroke();
+  // ALINEA — smaller and lighter
+  ctx.fillStyle = ac2 + 'dd'; ctx.font = '500 36px "DM Mono",monospace';
+  ctx.textAlign = 'center'; ctx.letterSpacing = '12px';
+  ctx.fillText('ALINEA', W/2, fY + 52); ctx.letterSpacing = '0';
+  // #MakingVisibleTheInvisible — middle
+  ctx.fillStyle = 'rgba(255,255,255,.30)'; ctx.font = '300 21px "DM Mono",monospace'; ctx.letterSpacing = '1px';
+  ctx.fillText('#MakingVisibleTheInvisible', W/2, fY + 92); ctx.letterSpacing = '0';
+  // @alinea.work — bottom
+  ctx.fillStyle = ac + 'bb'; ctx.font = '400 26px "DM Mono",monospace'; ctx.letterSpacing = '3px';
+  ctx.fillText('@alinea.work', W/2, fY + 130); ctx.letterSpacing = '0';
 }
 
 // Eyebrow label (e.g. WISHLIST, READING, DENSEST SYSTEM)
@@ -6736,7 +6736,7 @@ function shareGalaxySnapshot(){
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   // Accent color tint layer
   const tint=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.7);
-  tint.addColorStop(0,ac+'22');tint.addColorStop(1,'rgba(0,0,0,0)');
+  tint.addColorStop(0,ac+'0d');tint.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=tint;ctx.fillRect(0,0,W,H);
   // Stars
   const rng=s=>{let x=Math.sin(s)*10000;return x-Math.floor(x);};
