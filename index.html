@@ -2712,6 +2712,25 @@ function _shareBookDirect(bookId){
 //  All share images use these for consistent branding
 // ══════════════════════════════════════════════════════
 
+
+// Universal letter-spaced text — works in ALL browsers including old Safari iOS
+function _fillTextSpaced(ctx, text, cx, cy, spacing) {
+  ctx.save();
+  ctx.textAlign = 'left';
+  // Measure total width
+  let total = 0;
+  for (let i = 0; i < text.length; i++) {
+    total += ctx.measureText(text[i]).width;
+    if (i < text.length - 1) total += spacing;
+  }
+  let x = cx - total / 2;
+  for (let i = 0; i < text.length; i++) {
+    ctx.fillText(text[i], x, cy);
+    x += ctx.measureText(text[i]).width + (i < text.length - 1 ? spacing : 0);
+  }
+  ctx.restore();
+}
+
 // Draw the full background: gradient + stars + center glow (tinted with accent)
 function _drawShareBg(ctx, W, H, theme, glowCenterY) {
   const ac = theme.accent, ac2 = theme.accent2;
@@ -2772,20 +2791,17 @@ function _drawShareFooter(ctx, W, H, theme) {
   const fH = 160;
   const fY = H - fH;
   // Semi-transparent overlay
-  ctx.fillStyle = 'rgba(4,3,12,.72)'; ctx.fillRect(0, fY, W, fH);
+  ctx.fillStyle = 'rgba(4,3,12,.05)'; ctx.fillRect(0, fY, W, fH);
   // Separator line
   ctx.strokeStyle = ac + '50'; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(W * .30, fY + 1); ctx.lineTo(W * .70, fY + 1); ctx.stroke();
-  // ALINEA — smaller and lighter
-  ctx.fillStyle = ac2 + 'dd'; ctx.font = '500 36px "DM Mono",monospace';
-  ctx.textAlign = 'center'; ctx.letterSpacing = '12px';
-  ctx.fillText('ALINEA', W/2, fY + 52); ctx.letterSpacing = '0';
-  // #MakingVisibleTheInvisible — middle
-  ctx.fillStyle = 'rgba(255,255,255,.30)'; ctx.font = '300 21px "DM Mono",monospace'; ctx.letterSpacing = '1px';
-  ctx.fillText('#MakingVisibleTheInvisible', W/2, fY + 92); ctx.letterSpacing = '0';
-  // @alinea.work — bottom
-  ctx.fillStyle = ac + 'bb'; ctx.font = '400 26px "DM Mono",monospace'; ctx.letterSpacing = '3px';
-  ctx.fillText('@alinea.work', W/2, fY + 130); ctx.letterSpacing = '0';
+  // #MakingVisibleTheInvisible
+  ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.font = '300 24px "DM Mono",monospace';
+  ctx.textAlign = 'center'; ctx.letterSpacing = '2px';
+  ctx.fillText('#MakingVisibleTheInvisible', W/2, fY + 72); ctx.letterSpacing = '0px';
+  // @alinea.work
+  ctx.fillStyle = ac + 'cc'; ctx.font = '400 26px "DM Mono",monospace'; ctx.letterSpacing = '2px';
+  ctx.fillText('@alinea.work', W/2, fY + 112); ctx.letterSpacing = '0px';
 }
 
 // Eyebrow label (e.g. WISHLIST, READING, DENSEST SYSTEM)
@@ -2816,12 +2832,40 @@ function _renderBookCanvas(b,checks){
   const cv=document.createElement('canvas');cv.width=W;cv.height=H;
   const ctx=cv.getContext('2d');
   const theme=ACCENT_THEMES[currentTheme]||ACCENT_THEMES.purple;
-  const ac=theme.accent,ac2=theme.accent2;
+  const ac=theme.accent,ac2=theme.accent2,ac3=theme.accent3;
+  const glowStrong=theme.glow.replace(/[\d.]+\)$/,'0.8)');
+  const glowMid=theme.glow.replace(/[\d.]+\)$/,'0.18)');
+  const glowLine=theme.glow.replace(/[\d.]+\)$/,'0.4)');
 
   const _draw=(imgEl)=>{
-    _drawShareBg(ctx,W,H,theme,H*.45);
-    let y=_drawShareHeader(ctx,W,theme,148,72);
-    y+=30;
+    // Background — identical to quote
+    const bg=ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,'#04030d');bg.addColorStop(.5,'#0a0818');bg.addColorStop(1,'#04030d');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    const rng=s=>{let x=Math.sin(s)*10000;return x-Math.floor(x);};
+    for(let i=0;i<320;i++){
+      ctx.beginPath();ctx.arc(rng(i*7.3)*W,rng(i*3.7)*H,rng(i*11.1)*1.4+.2,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${rng(i*5.9)*.6+.1})`;ctx.fill();
+    }
+    const glowRad=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.7);
+    glowRad.addColorStop(0,glowMid);glowRad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=glowRad;ctx.fillRect(0,0,W,H);
+    // Orb — identical to quote
+    const orbX=W/2,orbY=H*.14,orbR=78;
+    const orbGrad=ctx.createRadialGradient(orbX-orbR*.3,orbY-orbR*.3,0,orbX,orbY,orbR);
+    orbGrad.addColorStop(0,'#fff');orbGrad.addColorStop(.25,ac2);
+    orbGrad.addColorStop(.65,ac);orbGrad.addColorStop(1,ac3);
+    ctx.shadowBlur=70;ctx.shadowColor=glowStrong;
+    ctx.fillStyle=orbGrad;ctx.beginPath();ctx.arc(orbX,orbY,orbR,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;
+    // ALINEA wordmark — identical to quote
+    ctx.fillStyle=ac2;ctx.font='500 48px "DM Mono",monospace';
+    ctx.textAlign='center';ctx.letterSpacing='12px';
+    ctx.fillText('ALINEA',W/2,orbY+orbR+68);
+    // Separator line
+    ctx.strokeStyle=glowLine;ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(W*.22,H*.26);ctx.lineTo(W*.78,H*.26);ctx.stroke();
+    let y=H*.27;
     // Category label
     if(b.category){
       const catObj=CAT_COLORS[b.category]||CAT_COLORS[CAT_PARENT[b.category]||'']||{sun:ac2};
@@ -2863,8 +2907,11 @@ function _renderBookCanvas(b,checks){
     _exportBitStat(cv);
   };
 
-  // Load fonts first, then cover
-  (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{
+  // Load fonts first (force load DM Mono 500 before drawing)
+  const _fontLoad = document.fonts ? 
+    document.fonts.load('500 52px "DM Mono"').then(()=>document.fonts.ready) : 
+    Promise.resolve();
+  _fontLoad.then(()=>{
     if(checks.f_cover&&b.cover){
       const img=new Image();
       img.onload=()=>_draw(img);
@@ -5393,6 +5440,8 @@ function _renderBitCanvas(titleText, bodyLines, books) {
   const ac = theme.accent, ac2 = theme.accent2, ac3 = theme.accent3;
   const rng = s => { let x = Math.sin(s) * 10000; return x - Math.floor(x); };
 
+  // Pre-load fonts before drawing
+  const _doRender = () => {
   // ── Unified background ──
   _drawShareBg(ctx, W, H, theme, H * .42);
 
@@ -5434,7 +5483,6 @@ function _renderBitCanvas(titleText, bodyLines, books) {
   const coverZoneW = W - 100;
 
   if (n === 0) {
-    // Text-only visual — bodyLines already rendered above, just finalize
     _finalizeBitCanvas(ctx, cv, W, H, ac, ac2);
     return;
   }
@@ -5455,6 +5503,8 @@ function _renderBitCanvas(titleText, bodyLines, books) {
     const by = coverZoneTop + pos.y;
     _drawCover(ctx, books[i], bx, by, pos.cw, pos.ch, ac, Math.max(8, pos.cw * 0.04), onLoad);
   });
+  }; // end _doRender
+  (document.fonts ? document.fonts.load('500 52px "DM Mono"').then(()=>document.fonts.ready) : Promise.resolve()).then(_doRender);
 }
 
 // Geometric layout engine
@@ -6754,9 +6804,9 @@ function shareGalaxySnapshot(){
   ctx.fillStyle=ac2+'dd';ctx.font='500 '+fs+'px "DM Mono",monospace';
   ctx.textAlign='center';ctx.letterSpacing='4px';
   ctx.fillText('ALINEA',W/2,H-fH+Math.round(fH*.46));
-  ctx.fillStyle=ac+'aa';ctx.font='300 '+Math.round(fs*.72)+'px "DM Mono",monospace';
-  ctx.letterSpacing='2px';
-  ctx.fillText('@alinea.work',W/2,H-fH+Math.round(fH*.78));
+  ctx.fillStyle='rgba(255,255,255,.32)';ctx.font='300 '+Math.round(fs*.68)+'px "DM Mono",monospace';
+  ctx.letterSpacing='1px';
+  ctx.fillText('#MakingVisibleTheInvisible',W/2,H-fH+Math.round(fH*.78));
   ctx.letterSpacing='0px';
   if(btn){btn.textContent='📸';btn.style.pointerEvents='';}
   out.toBlob(async blob=>{
